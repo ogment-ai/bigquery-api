@@ -1,9 +1,7 @@
 import { Router } from 'express';
-// Import the Google Cloud client library using default credentials
-import { BigQuery } from '@google-cloud/bigquery';
+import { bigquery } from '../lib/bigquery.js';
 
 const router = Router();
-const bigquery = new BigQuery();
 
 async function query() {
   //do anything you want here
@@ -15,11 +13,8 @@ async function queryBigQueryTopic1() {
     FROM \`ogment-dev.gold_dataset_eu.gold_table\`
     LIMIT 10`;
 
-  // For all options, see https://cloud.google.com/bigquery/docs/reference/rest/v2/jobs/query
   const options = {
     query: query,
-    // Location must match that of the dataset(s) referenced in the query.
-    location: 'europe-west3',
   };
 
   // Run the query as a job

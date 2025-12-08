@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import express from 'express';
 import bigQueryTopic1Router from './routes/bqTopic1.js';
 
