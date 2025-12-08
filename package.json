@@ -1,0 +1,23 @@
+{
+  "name": "big-query-api",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "",
+  "main": "src/main.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "ts-node src/main.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^24.10.1",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@google-cloud/bigquery": "^8.1.1",
+    "express": "^5.2.1"
+  }
+}
