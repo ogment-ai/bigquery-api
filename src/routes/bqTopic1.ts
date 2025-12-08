@@ -11,7 +11,7 @@ async function query() {
 async function queryBigQueryTopic1() {
   const query = `SELECT *
     FROM \`ogment-dev.gold_dataset_eu.gold_table\`
-    LIMIT 10`;
+    LIMIT 1`;
 
   const options = {
     query: query,

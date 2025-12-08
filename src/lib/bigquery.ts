@@ -1,8 +1,8 @@
 import { BigQuery } from '@google-cloud/bigquery';
 
-const PROJECT_ID = process.env.GCP_PROJECT_ID ?? 'ogment-dev';
-const LOCATION = process.env.GCP_LOCATION ?? 'europe-west3';
-const CREDENTIALS_JSON = process.env.GCP_CREDENTIALS_JSON;
+const PROJECT_ID = process.env.GCP_PROJECT_ID!
+const LOCATION = process.env.GCP_LOCATION!
+const CREDENTIALS_JSON = process.env.GCP_CREDENTIALS_JSON!;
 
 function createBigQueryClient() {
   if (CREDENTIALS_JSON) {
