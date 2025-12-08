@@ -1,31 +1,18 @@
-// Import the Google Cloud client library using default credentials
-// const {BigQuery} = require('@google-cloud/bigquery');
-import { BigQuery } from '@google-cloud/bigquery';
-const bigquery = new BigQuery();
-async function query() {
-  // Queries the U.S. given names dataset for the state of Texas.
+import express from 'express';
+import bigQueryTopic1Router from './routes/bqTopic1.js';
 
-  const query = `SELECT *
-    FROM \`ogment-dev.gold_dataset_eu.gold_table\`
-    LIMIT 10`;
+const app = express();
+app.use(express.json());
+app.use('/bqTopic1', bigQueryTopic1Router);
 
-  // For all options, see https://cloud.google.com/bigquery/docs/reference/rest/v2/jobs/query
-  const options = {
-    query: query,
-    // Location must match that of the dataset(s) referenced in the query.
-    location: 'europe-west3',
-  };
+app.get('/', (req, res) => {
+  res.json({ message: 'Hello World!' });
+});
 
-  // Run the query as a job
-  const [job] = await bigquery.createQueryJob(options);
-  console.log(`Job ${job.id} started.`);
+app.get('/health', (req, res) => {
+  res.json({ message: 'The API is healthy!' });
+});
 
-  // Wait for the query to finish
-  const [rows] = await job.getQueryResults();
-
-  // Print the results
-  console.log('Rows:');
-  rows.forEach(row => console.log(row));
-}
-
-query();
+app.listen(3000, () => {
+  console.log('Server is running on port 3000');
+});
