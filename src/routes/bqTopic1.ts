@@ -31,11 +31,52 @@ async function queryBigQueryTopic1() {
   return rows;
 }
 
+/**
+ * @openapi
+ * /bqTopic1/query:
+ *   get:
+ *     summary: Query BigQuery Topic 1
+ *     description: Executes a BigQuery query and returns results from gold_table
+ *     tags:
+ *       - BigQuery Topic 1
+ *     responses:
+ *       200:
+ *         description: Query results
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 bqResult:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ */
 router.get('/query', async (req, res) => {
   const result = await queryBigQueryTopic1();
   res.json({ bqResult: result });
 });
 
+/**
+ * @openapi
+ * /bqTopic1/query-test:
+ *   get:
+ *     summary: Test endpoint
+ *     description: Returns a test message without querying BigQuery
+ *     tags:
+ *       - BigQuery Topic 1
+ *     responses:
+ *       200:
+ *         description: Test response
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: test_query_topic_1_results
+ */
 router.get('/query-test', async (req, res) => {
   const result = await query();
   res.json({ message: result });

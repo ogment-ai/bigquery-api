@@ -9,7 +9,8 @@ big-query-api/
 ├── src/
 │   ├── main.ts              # Entry point - Express server setup
 │   ├── lib/
-│   │   └── bigquery.ts      # BigQuery client configuration
+│   │   ├── bigquery.ts      # BigQuery client configuration
+│   │   └── swagger.ts       # Swagger/OpenAPI configuration
 │   └── routes/
 │       ├── bqTopic1.ts      # Routes for BigQuery topic 1
 │       └── bqTopic2.ts      # Routes for BigQuery topic 2
@@ -71,10 +72,19 @@ The server will start at `http://localhost:3000` and auto-restart on file change
 | `npm run build` | Compile TypeScript to JavaScript |
 | `npm start` | Run the compiled production server |
 
+## API Documentation
+
+Interactive API documentation is available via Swagger UI:
+
+**URL:** `http://localhost:3000/api-docs`
+
+Start the server and open the URL in your browser to explore and test all endpoints.
+
 ## API Endpoints
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
+| GET | `/api-docs` | Swagger UI - Interactive API documentation |
 | GET | `/` | Health check - returns hello message |
 | GET | `/health` | Health check endpoint |
 | GET | `/bqTopic1/query` | Execute BigQuery query for topic 1 |
