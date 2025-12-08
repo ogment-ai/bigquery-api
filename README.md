@@ -15,7 +15,8 @@ big-query-api/
 │       ├── bqTopic1.ts      # Routes for BigQuery topic 1
 │       └── bqTopic2.ts      # Routes for BigQuery topic 2
 ├── dist/                    # Compiled JavaScript (generated)
-├── .env                     # Environment variables (create this)
+├── .env                     # Environment variables (create from template)
+├── .env.template            # Environment variables template
 ├── Dockerfile               # Docker configuration for deployment
 ├── fly.toml                 # Fly.io deployment config
 ├── package.json
@@ -39,12 +40,18 @@ npm install
 
 ### 2. Set up environment variables
 
-Create a `.env` file in the project root:
+Copy the template and fill in your values:
+
+```bash
+cp .env.template .env
+```
+
+Then edit `.env` with your configuration:
 
 ```bash
 GCP_PROJECT_ID=your-project-id
 GCP_LOCATION=europe-west3
-GCP_CREDENTIALS_JSON=
+GCP_CREDENTIALS_JSON=<your-service-account-json>
 ```
 
 ### 3. Configure Google Cloud authentication

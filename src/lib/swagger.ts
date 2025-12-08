@@ -6,7 +6,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const PORT = process.env.PORT ?? 3000;
-const PRODUCTION_URL = process.env.PRODUCTION_URL ?? 'https://big-query-api-aged-hill-1301.fly.dev';
+const PRODUCTION_URL = process.env.PRODUCTION_URL!
 
 // In development (tsx), files are .ts in src/
 // In production (node), files are .js in dist/
