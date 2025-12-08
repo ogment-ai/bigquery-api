@@ -13,6 +13,11 @@ app.use(express.json());
 // Swagger UI
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
+// OpenAPI JSON spec
+app.get('/api-docs.json', (req, res) => {
+  res.json(swaggerSpec);
+});
+
 // Routes
 app.use('/bqTopic1', bigQueryTopic1Router);
 app.use('/bqTopic2', bigQueryTopic2Router);
@@ -63,5 +68,6 @@ app.get('/health', (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
-  console.log(`Swagger docs available at http://localhost:${PORT}/api-docs`);
+  console.log(`Swagger UI: http://localhost:${PORT}/api-docs`);
+  console.log(`OpenAPI JSON: http://localhost:${PORT}/api-docs.json`);
 });
