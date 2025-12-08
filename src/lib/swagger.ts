@@ -1,7 +1,22 @@
 import swaggerJsdoc from 'swagger-jsdoc';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const PORT = process.env.PORT ?? 3000;
-const PRODUCTION_URL = process.env.PRODUCTION_URL! ?? 'https://big-query-api-aged-hill-1301.fly.dev';
+const PRODUCTION_URL = process.env.PRODUCTION_URL ?? 'https://big-query-api-aged-hill-1301.fly.dev';
+
+// In development (tsx), files are .ts in src/
+// In production (node), files are .js in dist/
+const isDev = process.env.NODE_ENV !== 'production';
+const routesPath = isDev
+  ? path.join(__dirname, '../routes/*.ts')
+  : path.join(__dirname, '../routes/*.js');
+const mainPath = isDev
+  ? path.join(__dirname, '../main.ts')
+  : path.join(__dirname, '../main.js');
 
 const options: swaggerJsdoc.Options = {
   definition: {
@@ -22,7 +37,7 @@ const options: swaggerJsdoc.Options = {
       },
     ],
   },
-  apis: ['./src/routes/*.ts', './src/main.ts'],
+  apis: [routesPath, mainPath],
 };
 
 export const swaggerSpec = swaggerJsdoc(options);
