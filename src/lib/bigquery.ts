@@ -28,3 +28,4 @@ function createBigQueryClient() {
 export const bigquery = createBigQueryClient();
 export { PROJECT_ID, LOCATION };
 
+

@@ -28,10 +28,6 @@ const options: swaggerJsdoc.Options = {
     },
     servers: [
       {
-        url: `http://localhost:${PORT}`,
-        description: 'Development server',
-      },
-      {
         url: PRODUCTION_URL,
         description: 'Production server (Fly.io)',
       },
