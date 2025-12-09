@@ -6,7 +6,7 @@ import bigQueryTopic1Router from './routes/bqTopic1.js';
 import bigQueryTopic2Router from './routes/bqTopic2.js';
 
 const app = express();
-const PORT = process.env.PORT ?? 3000;
+const PORT = Number(process.env.PORT) || 3000;
 
 app.use(express.json());
 
@@ -66,8 +66,8 @@ app.get('/health', (req, res) => {
   res.json({ message: 'The API is healthy!' });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server is running on 0.0.0.0:${PORT}`);
   console.log(`Swagger UI: http://localhost:${PORT}/api-docs`);
   console.log(`OpenAPI JSON: http://localhost:${PORT}/api-docs.json`);
 });
