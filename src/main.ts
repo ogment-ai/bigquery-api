@@ -4,10 +4,20 @@ import swaggerUi from 'swagger-ui-express';
 import { swaggerSpec } from './lib/swagger.js';
 import bigQueryTopic1Router from './routes/bqTopic1.js';
 import bigQueryTopic2Router from './routes/bqTopic2.js';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
+import cors from 'cors';
+import { auth } from './middelware/auth.js';
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
 
+app.use(helmet());
+app.use(rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+}));
+app.use(cors());
 app.use(express.json());
 
 // Swagger UI
@@ -19,8 +29,8 @@ app.get('/api-docs.json', (req, res) => {
 });
 
 // Routes
-app.use('/bqTopic1', bigQueryTopic1Router);
-app.use('/bqTopic2', bigQueryTopic2Router);
+app.use('/bqTopic1', auth, bigQueryTopic1Router);
+app.use('/bqTopic2', auth, bigQueryTopic2Router);
 
 /**
  * @openapi

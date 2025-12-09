@@ -87,16 +87,50 @@ Interactive API documentation is available via Swagger UI:
 
 Start the server and open the URL in your browser to explore and test all endpoints.
 
+## Authentication
+
+This API uses **Bearer Token** authentication. Protected endpoints require an `Authorization` header with a valid API key.
+
+### How to authenticate
+
+Include the `Authorization` header with your requests:
+
+```bash
+curl -H "authorization: YOUR_API_KEY" http://localhost:3000/bqTopic1/query
+```
+
+### Protected vs Public endpoints
+
+| Endpoint | Auth Required |
+|----------|---------------|
+| `/` | No |
+| `/health` | No |
+| `/api-docs` | No |
+| `/bqTopic1/*` | **Yes** |
+| `/bqTopic2/*` | **Yes** |
+
+### Setting up your API key
+
+Add your API key to the `.env` file:
+
+```bash
+API_KEY=your-secret-api-key
+```
+
+### Example
+
+<img src="./docs/auth-screenshot.png" alt="Authentication Example" width="800">
+
 ## API Endpoints
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api-docs` | Swagger UI - Interactive API documentation |
-| GET | `/` | Health check - returns hello message |
-| GET | `/health` | Health check endpoint |
-| GET | `/bqTopic1/query` | Execute BigQuery query for topic 1 |
-| GET | `/bqTopic1/query-test` | Test endpoint for topic 1 |
-| GET | `/bqTopic2/query` | Test endpoint for topic 2 |
+| Method | Endpoint | Description | Auth |
+|--------|----------|-------------|------|
+| GET | `/api-docs` | Swagger UI - Interactive API documentation | No |
+| GET | `/` | Health check - returns hello message | No |
+| GET | `/health` | Health check endpoint | No |
+| GET | `/bqTopic1/query` | Execute BigQuery query for topic 1 | **Yes** |
+| GET | `/bqTopic1/query-test` | Test endpoint for topic 1 | **Yes** |
+| GET | `/bqTopic2/query` | Test endpoint for topic 2 | **Yes** |
 
 ## Deployment (Fly.io)
 
