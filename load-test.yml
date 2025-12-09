@@ -1,0 +1,25 @@
+config:
+  target: "https://big-query-api-aged-hill-1301.fly.dev/"
+  phases:
+    - duration: 30
+      arrivalRate: 5
+      name: "Warm up"
+    - duration: 60
+      arrivalRate: 20
+      name: "Sustained load"
+    - duration: 30
+      arrivalRate: 50
+      name: "Peak load"
+
+scenarios:
+  - name: "API endpoints"
+    flow:
+      - get:
+          url: "/health"
+          expect:
+            - statusCode: 200
+      - get:
+          url: "/"
+      - get:
+          url: "/bqTopic1/query-test"
+      - think: 1
