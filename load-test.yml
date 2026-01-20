@@ -1,25 +1,38 @@
 config:
-  target: "https://big-query-api-aged-hill-1301.fly.dev/"
+  target: "https://big-query-dlg.fly.dev"
   phases:
     - duration: 30
-      arrivalRate: 5
+      arrivalRate: 2
       name: "Warm up"
     - duration: 60
-      arrivalRate: 20
+      arrivalRate: 5
       name: "Sustained load"
     - duration: 30
-      arrivalRate: 50
+      arrivalRate: 10
       name: "Peak load"
+  defaults:
+    headers:
+      Authorization: "g?y39:66jRDc"
+      Content-Type: "application/json"
 
 scenarios:
-  - name: "API endpoints"
+  - name: "Health check"
+    weight: 1
     flow:
       - get:
           url: "/health"
-          expect:
-            - statusCode: 200
+
+  - name: "List datasets"
+    weight: 2
+    flow:
       - get:
-          url: "/"
-      - get:
-          url: "/bqTopic1/query-test"
-      - think: 1
+          url: "/query/datasets"
+
+  - name: "Heavy SQL query"
+    weight: 3
+    flow:
+      - post:
+          url: "/query"
+          json:
+            sql: "SELECT * FROM `booming-bindery-363108.silver.sentinel` LIMIT 100"
+            maxRows: 100

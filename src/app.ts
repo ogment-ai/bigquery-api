@@ -13,8 +13,9 @@ export const app = express();
 // Security
 app.use(helmet());
 app.use(rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 100, // 100 requests per minute per IP
+  message: { error: 'Too many requests', message: 'Rate limit exceeded. Try again in 60 seconds.', statusCode: 429 },
 }));
 
 // Configurable CORS origins
