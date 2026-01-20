@@ -2,8 +2,7 @@ import 'dotenv/config';
 import express, { type Request, type Response, type NextFunction } from 'express';
 import swaggerUi from 'swagger-ui-express';
 import { swaggerSpec } from './lib/swagger.js';
-import bigQueryTopic1Router from './routes/bqTopic1.js';
-import bigQueryTopic2Router from './routes/bqTopic2.js';
+import queryRouter from './routes/query.js';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import cors from 'cors';
@@ -51,30 +50,7 @@ app.get('/api-docs.json', (req, res) => {
 });
 
 // Routes
-app.use('/bqTopic1', auth, bigQueryTopic1Router);
-app.use('/bqTopic2', auth, bigQueryTopic2Router);
-
-/**
- * @openapi
- * /:
- *   get:
- *     summary: Hello World
- *     description: Returns a hello message
- *     responses:
- *       200:
- *         description: Success
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Hello World!
- */
-app.get('/', (req, res) => {
-  res.json({ message: 'Hello World!' });
-});
+app.use('/query', auth, queryRouter);
 
 /**
  * @openapi

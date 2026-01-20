@@ -63,6 +63,12 @@ GCP_CREDENTIALS_JSON=<your-service-account-json>
    ```
 3. Paste the output as `GCP_CREDENTIALS_JSON` in your `.env` file
 
+
+
+If you are directly using the data from supabase, use:
+# Extract and compact the service account JSON
+cat dlg-key.json | jq -r '.BIGQUERY_KEY_CONTENT' | jq -c .
+
 ### 4. Run the development server
 
 ```bash
