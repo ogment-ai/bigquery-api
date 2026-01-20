@@ -5,7 +5,7 @@ A Node.js Express API that provides a REST interface to Google BigQuery. Query a
 ## ✨ Features
 
 - 🔍 **Execute SQL queries** on any BigQuery dataset
-- 📋 **List datasets and tables** in your project  
+- 📋 **Browse data catalog** - all datasets and tables in one call  
 - 📊 **Get table schemas** with metadata
 - 🔐 **API key authentication** on all query endpoints
 - 🌍 **Multi-region support** - query US, EU, or any location
@@ -17,8 +17,8 @@ A Node.js Express API that provides a REST interface to Google BigQuery. Query a
 # Health check
 curl https://big-query-dlg.fly.dev/health
 
-# List datasets (requires API key)
-curl https://big-query-dlg.fly.dev/query/datasets \
+# Get full catalog (requires API key)
+curl https://big-query-dlg.fly.dev/query/catalog-datasets \
   -H 'Authorization: YOUR_API_KEY'
 
 # Execute SQL query
@@ -36,8 +36,7 @@ curl -X POST https://big-query-dlg.fly.dev/query \
 | GET | `/api-docs` | Swagger UI documentation | No |
 | GET | `/api-docs.json` | OpenAPI JSON spec | No |
 | POST | `/query` | Execute SQL query | **Yes** |
-| GET | `/query/datasets` | List all datasets | **Yes** |
-| GET | `/query/datasets/:datasetId/tables` | List tables in dataset | **Yes** |
+| GET | `/query/catalog-datasets` | List all datasets with their tables | **Yes** |
 | GET | `/query/tables/:datasetId/:tableId/schema` | Get table schema | **Yes** |
 
 ### POST /query
@@ -56,6 +55,22 @@ Execute a SQL query against BigQuery.
 |-------|------|----------|-------------|
 | `sql` | string | Yes | SQL query to execute |
 | `maxRows` | number | No | Max rows to return (default: 1000, max: 10000) |
+
+## 🔌 Ogment Integration
+
+Use this API with [Ogment](https://ogment.io) or any OpenAPI-compatible tool.
+
+**OpenAPI JSON URL:**
+```
+https://big-query-dlg.fly.dev/api-docs.json
+```
+
+**Authentication:**  
+All `/query/*` endpoints require an `Authorization` header with your API key:
+
+```
+Authorization: YOUR_API_KEY
+```
 
 ## 🔧 Environment Variables
 
@@ -133,7 +148,7 @@ src/
 ## 🛡️ Security
 
 - API key required for all query endpoints
-- Rate limiting (100 requests per 15 minutes)
+- Rate limiting (100 requests per minute)
 - Helmet security headers
 - Configurable CORS origins
 - Optional Swagger docs protection

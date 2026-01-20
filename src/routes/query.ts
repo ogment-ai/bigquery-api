@@ -84,72 +84,23 @@ router.post('/', async (req, res) => {
 
 /**
  * @openapi
- * /query/datasets:
+ * /query/catalog-datasets:
  *   get:
- *     summary: List all datasets
- *     description: Returns all datasets in the configured BigQuery project
+ *     summary: Get full data catalog
+ *     description: Returns all tables across all datasets in a flat list
  *     tags:
  *       - Query
  *     security:
  *       - ApiKeyAuth: []
  *     responses:
  *       200:
- *         description: List of datasets
+ *         description: Flat list of all tables with their dataset info
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
  *                 projectId:
- *                   type: string
- *                 datasets:
- *                   type: array
- *                   items:
- *                     type: object
- *                     properties:
- *                       id:
- *                         type: string
- *                       location:
- *                         type: string
- */
-router.get('/datasets', async (req, res) => {
-  const [datasets] = await bigquery.getDatasets();
-
-  res.json({
-    projectId: PROJECT_ID,
-    datasets: datasets.map(ds => ({
-      id: ds.id,
-      location: ds.metadata?.location,
-    })),
-  });
-});
-
-/**
- * @openapi
- * /query/datasets/{datasetId}/tables:
- *   get:
- *     summary: List tables in a dataset
- *     description: Returns all tables in the specified dataset
- *     tags:
- *       - Query
- *     security:
- *       - ApiKeyAuth: []
- *     parameters:
- *       - in: path
- *         name: datasetId
- *         required: true
- *         schema:
- *           type: string
- *         description: Dataset ID
- *     responses:
- *       200:
- *         description: List of tables
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 datasetId:
  *                   type: string
  *                 tables:
  *                   type: array
@@ -158,20 +109,31 @@ router.get('/datasets', async (req, res) => {
  *                     properties:
  *                       id:
  *                         type: string
+ *                       datasetId:
+ *                         type: string
+ *                       location:
+ *                         type: string
  *                       type:
  *                         type: string
  */
-router.get('/datasets/:datasetId/tables', async (req, res) => {
-  const { datasetId } = req.params;
-  const dataset = bigquery.dataset(datasetId);
-  const [tables] = await dataset.getTables();
+router.get('/catalog-datasets', async (req, res) => {
+  const [datasets] = await bigquery.getDatasets();
+
+  const tablesPerDataset = await Promise.all(
+    datasets.map(async (ds) => {
+      const [tables] = await ds.getTables();
+      return tables.map(t => ({
+        id: t.id,
+        datasetId: ds.id,
+        location: ds.metadata?.location,
+        type: t.metadata?.type,
+      }));
+    })
+  );
 
   res.json({
-    datasetId,
-    tables: tables.map(table => ({
-      id: table.id,
-      type: table.metadata?.type,
-    })),
+    projectId: PROJECT_ID,
+    tables: tablesPerDataset.flat(),
   });
 });
 

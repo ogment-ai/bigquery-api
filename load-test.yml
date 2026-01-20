@@ -26,7 +26,7 @@ scenarios:
     weight: 2
     flow:
       - get:
-          url: "/query/datasets"
+          url: "/query/catalog-datasets"
 
   - name: "Heavy SQL query"
     weight: 3
