@@ -24,7 +24,14 @@ const options: swaggerJsdoc.Options = {
     info: {
       title: 'Big Query API',
       version: '1.0.0',
-      description: 'A Node.js Express API that connects to Google BigQuery',
+      description: `A REST API for querying Google BigQuery data.
+
+**Recommended workflow:**
+1. First, call GET /query/catalog-datasets to discover available tables
+2. Then, call GET /query/tables/{datasetId}/{tableId}/schema to understand the column structure
+3. Finally, call POST /query with your SQL query
+
+Always check the schema before writing queries to ensure correct column names and types.`,
     },
     servers: [
       {

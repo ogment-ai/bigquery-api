@@ -14,8 +14,14 @@ const QueryRequestSchema = z.object({
  * @openapi
  * /query:
  *   post:
- *     summary: Execute SQL query
- *     description: Run an arbitrary SQL query against BigQuery and return results
+ *     summary: Execute SQL query (Step 3)
+ *     description: |
+ *       Execute a SQL query against BigQuery. IMPORTANT: Before calling this endpoint, you should:
+ *       1. Call /query/catalog-datasets to find available tables
+ *       2. Call /query/tables/{datasetId}/{tableId}/schema to understand column names and types
+ *       
+ *       Use BigQuery SQL syntax with backtick notation: `datasetId.tableId` (e.g., `silver.sentinel`).
+ *       Always include a LIMIT clause to avoid returning too many rows.
  *     tags:
  *       - Query
  *     security:
@@ -31,8 +37,8 @@ const QueryRequestSchema = z.object({
  *             properties:
  *               sql:
  *                 type: string
- *                 description: SQL query to execute
- *                 example: "SELECT * FROM `project.dataset.table` LIMIT 10"
+ *                 description: SQL query using BigQuery syntax. Reference tables as `datasetId.tableId`. Always include LIMIT.
+ *                 example: "SELECT * FROM `silver.sentinel` LIMIT 10"
  *               maxRows:
  *                 type: integer
  *                 description: Maximum number of rows to return (default 1000, max 10000)
@@ -86,8 +92,16 @@ router.post('/', async (req, res) => {
  * @openapi
  * /query/catalog-datasets:
  *   get:
- *     summary: Get full data catalog
- *     description: Returns all tables across all datasets in a flat list
+ *     summary: List all available tables (Step 1 - Start here)
+ *     description: |
+ *       START HERE. Returns a flat list of all available BigQuery tables across all datasets.
+ *       Use this first to discover what data exists before querying.
+ *       
+ *       Each table includes:
+ *       - id: The table name (use this in SQL queries)
+ *       - datasetId: The dataset containing this table (needed for schema lookup and SQL queries)
+ *       - location: Geographic region (US, EU, etc.)
+ *       - type: TABLE or VIEW
  *     tags:
  *       - Query
  *     security:
@@ -109,12 +123,16 @@ router.post('/', async (req, res) => {
  *                     properties:
  *                       id:
  *                         type: string
+ *                         description: Table name - use in SQL as `datasetId.id`
  *                       datasetId:
  *                         type: string
+ *                         description: Parent dataset - needed for schema lookup
  *                       location:
  *                         type: string
+ *                         description: Geographic region (US, EU, etc.)
  *                       type:
  *                         type: string
+ *                         description: TABLE or VIEW
  */
 router.get('/catalog-datasets', async (req, res) => {
   const [datasets] = await bigquery.getDatasets();
@@ -141,8 +159,15 @@ router.get('/catalog-datasets', async (req, res) => {
  * @openapi
  * /query/tables/{datasetId}/{tableId}/schema:
  *   get:
- *     summary: Get table schema
- *     description: Returns the schema for a specific table
+ *     summary: Get table schema (Step 2 - Before querying)
+ *     description: |
+ *       Get column names and data types for a table BEFORE writing SQL queries.
+ *       Use datasetId and tableId from the /query/catalog-datasets response.
+ *       
+ *       Always check the schema to:
+ *       - Know the exact column names to use in SELECT
+ *       - Understand data types for proper filtering
+ *       - See which columns are NULLABLE vs REQUIRED
  *     tags:
  *       - Query
  *     security:
@@ -153,14 +178,16 @@ router.get('/catalog-datasets', async (req, res) => {
  *         required: true
  *         schema:
  *           type: string
+ *         description: Dataset ID from catalog-datasets response
  *       - in: path
  *         name: tableId
  *         required: true
  *         schema:
  *           type: string
+ *         description: Table ID from catalog-datasets response
  *     responses:
  *       200:
- *         description: Table schema
+ *         description: Table schema with column definitions
  *         content:
  *           application/json:
  *             schema:
@@ -172,15 +199,19 @@ router.get('/catalog-datasets', async (req, res) => {
  *                   type: string
  *                 schema:
  *                   type: array
+ *                   description: Array of column definitions
  *                   items:
  *                     type: object
  *                     properties:
  *                       name:
  *                         type: string
+ *                         description: Column name - use this in SQL queries
  *                       type:
  *                         type: string
+ *                         description: Data type (STRING, INTEGER, TIMESTAMP, etc.)
  *                       mode:
  *                         type: string
+ *                         description: NULLABLE or REQUIRED
  */
 router.get('/tables/:datasetId/:tableId/schema', async (req, res) => {
   const { datasetId, tableId } = req.params;
