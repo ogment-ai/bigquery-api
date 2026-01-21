@@ -15,14 +15,14 @@ A Node.js Express API that provides a REST interface to Google BigQuery. Query a
 
 ```bash
 # Health check
-curl https://big-query-dlg.fly.dev/health
+curl https://big-query-api.fly.dev/health
 
 # Get full catalog (requires API key)
-curl https://big-query-dlg.fly.dev/query/catalog-datasets \
+curl https://big-query-api.fly.dev/query/catalog-datasets \
   -H 'Authorization: YOUR_API_KEY'
 
 # Execute SQL query
-curl -X POST https://big-query-dlg.fly.dev/query \
+curl -X POST https://big-query-api.fly.dev/query \
   -H 'Authorization: YOUR_API_KEY' \
   -H 'Content-Type: application/json' \
   -d '{"sql": "SELECT 1 as test"}'
@@ -62,7 +62,7 @@ Use this API with [Ogment](https://ogment.io) or any OpenAPI-compatible tool.
 
 **OpenAPI JSON URL:**
 ```
-https://big-query-dlg.fly.dev/api-docs.json
+https://big-query-api.fly.dev/api-docs.json
 ```
 
 **Authentication:**  
@@ -106,7 +106,7 @@ cp .env.template .env
 cat service-account.json | jq -c . 
 
 # Or if using nested format from Supabase
-cat dlg-key.json | jq -r '.BIGQUERY_KEY_CONTENT' | jq -c .
+cat service-account-key.json | jq -r '.BIGQUERY_KEY_CONTENT' | jq -c .
 ```
 
 ### 4. Run development server

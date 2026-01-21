@@ -1,5 +1,5 @@
 config:
-  target: "https://big-query-dlg.fly.dev"
+  target: "https://big-query-api.fly.dev"
   phases:
     - duration: 30
       arrivalRate: 2
